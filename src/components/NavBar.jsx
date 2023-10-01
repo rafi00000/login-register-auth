@@ -1,12 +1,28 @@
-import { NavLink } from "react-router-dom";
+import React from "react";
+import { useContext } from "react";
+import { Link, NavLink } from "react-router-dom";
+import { AuthContext } from "./AuthProvider";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const NavBar = () => {
+  const { user, signOutUser } = useContext(AuthContext);
 
-    const navLinks = <div className="gap-4">
-        <li><NavLink to={'/'}><li>Home</li></NavLink></li>
-        <li><NavLink to={'/login'}>Login</NavLink></li>
-        <NavLink to={'/register'}><li>Register</li></NavLink>
-    </div> ;
+  const navLinks = (
+    <div className="gap-4 flex">
+      <li>
+        <NavLink to={"/"}>
+          <li>Home</li>
+        </NavLink>
+      </li>
+      <li>
+        <NavLink to={"/login"}>Login</NavLink>
+      </li>
+      <li>
+        <NavLink to={"/register"}>Register</NavLink>
+      </li>
+    </div>
+  );
 
   return (
     <div className="navbar bg-base-100">
@@ -30,7 +46,7 @@ const NavBar = () => {
           </label>
           <ul
             tabIndex={0}
-            className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+            className="menu menu-sm dropdown-content mt-3 z-[1] p-3 border rounded-box"
           >
             {navLinks}
           </ul>
@@ -38,13 +54,26 @@ const NavBar = () => {
         <a className="btn btn-ghost normal-case text-xl">daisyUI</a>
       </div>
       <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1">
-          {navLinks}
-        </ul>
+        <ul className="menu menu-horizontal px-1">{navLinks}</ul>
       </div>
       <div className="navbar-end">
-        <a className="btn">Button</a>
+        {user ? (
+          <>
+            <p>{user.email}</p>
+            <button className="btn btn-sm btn-outline" onClick={signOutUser}>
+              Sign Out
+            </button>
+            {
+              toast("login successful")
+            }
+          </>
+        ) : (
+          <Link to={"/login"}>
+            <button className="btn btn-sm btn-outline">Sign In</button>
+          </Link>
+        )}
       </div>
+      <ToastContainer></ToastContainer>
     </div>
   );
 };
